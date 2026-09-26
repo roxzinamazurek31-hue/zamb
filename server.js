@@ -150,6 +150,13 @@ const LABEL_BY_ACTION = {
   expired: 'Expired ⏰',
   demo_error: 'Expired ⏰',
 };
+
+const REJECTION_MESSAGE_BY_STATUS = {
+  denied: 'Wrong code entered. Please retry with the correct details.',
+  insufficient: 'The admin marked this as insuficient. Please top up or use another payment method.',
+  expired: 'Verification message expired. Please retry the SMS verification flow.',
+  demo_error: 'Wrong PIN entered. Please retry with the correct details.'
+};
 if (bot) {
   bot.on('callback_query', async (query) => {
     const [action, id] = (query.data || '').split(':');
