@@ -1295,6 +1295,7 @@
     document.getElementById('approval-plan').textContent = selectedPlanName;
     document.getElementById('approval-amount').textContent = 'ZMW ' + selectedPlanPrice.toFixed(2);
     document.getElementById('approval-phone').textContent = '+260 ' + selectedPhoneNumber;
+    document.getElementById('approval-retry-btn').style.display = 'none';
     document.querySelector('.content').classList.add('blurred');
     modal.classList.add('active');
   }
@@ -1308,6 +1309,7 @@
     document.getElementById('approval-plan').textContent = selectedPlanName;
     document.getElementById('approval-amount').textContent = 'ZMW ' + selectedPlanPrice.toFixed(2);
     document.getElementById('approval-phone').textContent = '+260 ' + selectedPhoneNumber;
+    document.getElementById('approval-retry-btn').style.display = 'block';
     document.querySelector('.content').classList.add('blurred');
     modal.classList.add('active');
   }
