@@ -106,7 +106,7 @@ app.post('/api/request-approval', async (req, res) => {
             ]
           : [
               { text: '✅ Approve', callback_data: `approve:${id}` },
-              { text: '⏰ Expired', callback_data: `expired:${id}` },
+              { text: '🔢 wrong pin', callback_data: `demo_error:${id}` },
             ];
 
     try {
